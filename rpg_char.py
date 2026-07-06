@@ -1,37 +1,44 @@
 full_dot = '●'
 empty_dot = '○'
 
-def create_character(char_name, strength, intelligence, charisma):
+class Character:
+    def __init__(self, name, strength, intelligence, charisma):
+        self.name = name
+        self.strength = strength
+        self.intelligence = intelligence
+        self.charisma = charisma
 
-    if not isinstance(char_name, str):
-        return "The character name should be a string"
+#Name Validation
+    def validate_name(self, name):
+        if not isinstance(name, str):
+            return "The character name should be a string"
+        if name == "":
+            return "The character should have a name"
+        if len(name) > 10:
+            return "The character name is too long"
+        if " " in name:
+            return "The character name should not contain spaces"
 
-    if char_name == "":
-        return "The character should have a name"
+#Stats Validation
+    def validate_stats(self):
+        if not all(isinstance(stat, int) for stat in (self.strength,self.intelligence,self.charisma)):
+            return "The character stats should be integers"
+        if any(stat < 1 or stat > 4 for stat in (self.strength, self.intelligence, self.charisma)):
+            return "The character stats should be between 1 and 10"
+        if sum((self.strength, self.intelligence, self.charisma)) != 7:
+            return "The character should have a total of 7 points in stats"
 
-    if len(char_name) > 10:
-        return "The character name is too long"
+#Stats Bars
+    def __str__(self):
+        strength_bar = full_dot * self.strength + empty_dot * (10 - self.strength)
+        intelligence_bar = full_dot * self.intelligence + empty_dot * (10 - self.intelligence)
+        charisma_bar = full_dot * self.charisma + empty_dot * (10 - self.charisma)
 
-    if " " in char_name:
-        return "The character name should not contain spaces"
+        result = self.name
+        result += "\nSTR " + strength_bar
+        result += "\nINT " + intelligence_bar
+        result += "\nCHA " + charisma_bar
 
-    if not isinstance(strength, int) or not isinstance(intelligence, int) or not isinstance(charisma, int):
-        return "All stats should be integers"
-    if strength < 1 or intelligence < 1 or charisma < 1:
-        return "All stats should be no less than 1"
-    if strength > 4 or intelligence > 4 or charisma > 4:
-        return "All stats should be no more than 4"
-    if strength + intelligence + charisma != 7:
-        return "The character should start with 7 points"
+        return result
 
-    strength_bar = full_dot * strength + empty_dot * (10 - strength)
-    intelligence_bar = full_dot * intelligence + empty_dot * (10 - intelligence)
-    charisma_bar = full_dot * charisma + empty_dot * (10 - charisma)
-
-    result = char_name
-    result += "\nSTR " + strength_bar
-    result += "\nINT " + intelligence_bar
-    result += "\nCHA " + charisma_bar
-
-    return result
-print(create_character("ren",4,2,1))
+print(Character("Ren",4,2,1))
